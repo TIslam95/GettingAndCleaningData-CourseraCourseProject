@@ -41,7 +41,7 @@ testset <- cbind(Y_testData, X_testData)
 
 ## Combine the Train set and Test set data to form a single dataframe
 
-allData <- rbind(trainset, testset)
+dataset <- rbind(trainset, testset)
 
 ## Remove temporary DataFrames from the Memory
 
@@ -50,7 +50,35 @@ rm(X_trainData, Y_trainData, trainset, X_testData, Y_testData, testset)
 ```
 
 
+```{r}
+## Extract only the Means and Standard Deviations of the measurements
+cols <- grep("(mean|std)[...]", names(dataset), value = TRUE)
+dataset <- select(dataset, c(ActivityLabel, cols))
+
+## Clean Column names
+names(dataset) <- gsub("[.]{1,3}", "_", names(dataset))
+```
 
 ```{r}
-tail(allData)
+# Read Activity labels from "activity_labels.txt" as a table
+activities <- read.table("UCI HAR Dataset/activity_labels.txt", col.names = c("ActivityLabel", "ActivityName"))
+
+# Remove "_" from activity names
+activities <- activities %>%
+  mutate(ActivityName = sub("_", " ", ActivityName))
+
+
+# Merge the Activity Table with the dataset matching by the ActivityLabel
+dataset <- merge(activities, dataset, by = "ActivityLabel")
+
+
+# Remove ActivityLabel Column from the dataset
+dataset <- dataset %>%
+  select(-"ActivityLabel")
 ```
+
+
+```{r}
+head(dataset)
+```
+
