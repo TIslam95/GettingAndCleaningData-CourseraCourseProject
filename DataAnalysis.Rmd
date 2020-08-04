@@ -42,6 +42,11 @@ testset <- cbind(Y_testData, X_testData)
 ## Combine the Train set and Test set data to form a single dataframe
 
 allData <- rbind(trainset, testset)
+
+## Remove temporary DataFrames from the Memory
+
+rm(X_trainData, Y_trainData, trainset, X_testData, Y_testData, testset)
+
 ```
 
 
